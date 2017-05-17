@@ -11,9 +11,11 @@ urlpatterns = [
     url(r'^orderitem/$', views.OrderItemList.as_view()),
     url(r'^register/$', views.RegistrationView.as_view(), name="register"),
 ]
-
+'''
 from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns += [
     url(r'^api-token-auth/', obtain_jwt_token)
 ]
+
+'''
