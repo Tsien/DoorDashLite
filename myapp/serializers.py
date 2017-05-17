@@ -1,9 +1,11 @@
 from rest_framework import serializers
-from .models import Customer, FoodItem, Order, Order_Items
+from .models import Customer, FoodItem, Order
 from django.contrib.auth.models import User
+
 
 class UserSerializer(serializers.ModelSerializer):
     phone_number = serializers.IntegerField(source='customer.phone_number')
+
     class Meta:
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'email', 'password', 'phone_number')
@@ -19,7 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
         customer = Customer(user=instance, **customer)
         customer.save()
 
-
         return instance
 
     def update(self, instance, validated_data):
@@ -33,21 +34,20 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class FoodItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoodItem
         fields = '__all__'
 
-class OrderItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order_Items
-        fields = '__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
-    order_cart = OrderItemSerializer(many=True)
+    items = FoodItemSerializer(many=True)
+
     class Meta:
         model = Order
-        fields = ('id', 'customer', 'address', 'checkout', 'order_cart')
+        fields = ('id', 'customer', 'address', 'checkout', 'items')
+
     def create(self, validated_data):
         instance = self.Meta.model(**validated_data)
         instance.save()

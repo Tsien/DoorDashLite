@@ -1,4 +1,6 @@
 env
+myapp/migrations/*.pyc
+myapp/*.pyc
 *.DS_Store
 *.pyc
 __pycache__
