@@ -12,7 +12,7 @@ class Customer(models.Model):
     phone_number = models.IntegerField()
 
     def __unicode__(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.username
 
 
 class FoodItem(models.Model):
@@ -27,7 +27,7 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     address = models.TextField(default="")
     checkout = models.BooleanField(default=False)
-    items = models.ManyToManyField(FoodItem, blank=True, related_name='orders')
+    items = models.ManyToManyField(FoodItem, blank=True, related_name='order', through='OrderItem')
 
     def __unicode__(self):
         return "Order number: " + repr(self.id)
@@ -35,4 +35,13 @@ class Order(models.Model):
     def check_out(self):
         if self.checkout:
             raise Exception("It's already checked out!")
-        self.checkout = True;
+        self.checkout = True
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order')
+    item = models.ForeignKey(FoodItem, on_delete=models.CASCADE, related_name='item')
+    quantity = models.IntegerField(default=0)
+    instructions = models.TextField(default="")
+    subtotal = models.IntegerField(default=0)
+
