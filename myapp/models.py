@@ -41,7 +41,7 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     address = models.TextField(default="")
     checkout = models.BooleanField(default=False)
-    items = models.ManyToManyField(FoodItem, blank=True, related_name='order', through='OrderItem')
+    items = models.ManyToManyField(FoodItem, blank=True, related_name='orderitem', through='OrderItem')
     deliver_fee = models.IntegerField(default=0)
     is_delivered = models.BooleanField(default=False)
 

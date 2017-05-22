@@ -3,15 +3,6 @@ from .models import Customer, FoodItem, Order, OrderItem
 from django.contrib.auth.models import User
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
-    order_id = serializers.ReadOnlyField(source='order.id')
-    item_name = serializers.ReadOnlyField(source='item.name')
-
-    class Meta:
-        model = OrderItem
-        fields = ('id', 'quantity', 'instructions', 'subtotal', 'order_id', 'item_name')
-
-
 class UserSerializer(serializers.ModelSerializer):
     phone_number = serializers.IntegerField(source='customer.phone_number')
 
@@ -34,12 +25,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         customer = validated_data.pop('customer', None)
+        Customer.objects.update_or_create(user=instance, defaults=customer)
         for attr, value in validated_data.items():
             if attr == 'password':
                 instance.set_password(value)
             else:
                 setattr(instance, attr, value)
-        customer = Customer(user=instance, **customer)
         instance.save()
         return instance
 
@@ -50,6 +41,12 @@ class FoodItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ('id', 'quantity', 'instructions', 'subtotal', 'order', 'item')
+
+
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(source='order', many=True)
 
@@ -58,13 +55,15 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'customer', 'address', 'checkout', 'items')
 
     def create(self, validated_data):
+        items_data = validated_data.pop('orderitem', None)
         instance = self.Meta.model(**validated_data)
+        OrderItem.objects.update_or_create(order=instance, defaults=items_data)
         instance.save()
         return instance
 
     def update(self, instance, validated_data):
+        items_data = validated_data.pop('orderitem', None)
+        OrderItem.objects.update_or_create(order=instance, defaults=items_data)
         instance = self.Meta.model(**validated_data)
         instance.save()
         return instance
-
-

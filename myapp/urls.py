@@ -1,5 +1,6 @@
 from django.conf.urls import url
-from myapp.views import ItemViewSet, api_root, UserViewSet, RegistrationView, OrderViewSet
+from myapp.views import ItemViewSet, api_root, UserViewSet, RegistrationView, OrderViewSet, OrderItemViewSet
+from myapp import views
 
 item_list = ItemViewSet.as_view({
     'get': 'list',
@@ -37,6 +38,18 @@ order_detail = OrderViewSet.as_view({
     'delete': 'destroy'
 })
 
+oi_list = OrderItemViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+oi_detail = OrderItemViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+
 urlpatterns = [
     url(r'^$', api_root),
 
@@ -46,8 +59,12 @@ urlpatterns = [
     url(r'^items/$', item_list, name='item-list'),
     url(r'^items/(?P<pk>[0-9]+)$', item_detail, name='item-detail'),
 
+    url(r'^orderitems/$', oi_list, name='oi-list'),
+    url(r'^orderitems/(?P<pk>[0-9]+)$', oi_detail, name='oi-detail'),
+
     url(r'^orders/$', order_list, name="order-list"),
-    url(r'^orders/(?P<pk>[0-9]+)/$', order_detail, name='order-detail'),
+    url(r'^orders/(?P<pk>[0-9]+)/$', views.OrderDetail.as_view(), name='order-detail'),
+    url(r'^orders/(?P<pk>[0-9]+)/items$', views.AddItemView.as_view(), name='add-item'),
 
     url(r'^register/$', RegistrationView.as_view(), name="register"),
 ]
