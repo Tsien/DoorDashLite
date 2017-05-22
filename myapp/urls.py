@@ -56,7 +56,7 @@ urlpatterns = [
     url(r'^users/$', user_list, name="user-list"),
     url(r'^users/(?P<pk>[0-9]+)/$', user_detail, name='user-detail'),
 
-    url(r'^items/$', item_list, name='item-list'),
+    url(r'^items/$', views.ItemList.as_view(), name='item-list'),
     url(r'^items/(?P<pk>[0-9]+)$', item_detail, name='item-detail'),
 
     url(r'^orderitems/$', oi_list, name='oi-list'),

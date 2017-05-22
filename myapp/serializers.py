@@ -55,15 +55,18 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'customer', 'address', 'checkout', 'items')
 
     def create(self, validated_data):
-        items_data = validated_data.pop('orderitem', None)
+        items_data = validated_data.pop('order', None)
         instance = self.Meta.model(**validated_data)
-        OrderItem.objects.update_or_create(order=instance, defaults=items_data)
+        for id in items_data:
+            OrderItem.objects.create(order=instance, **id)
         instance.save()
         return instance
 
     def update(self, instance, validated_data):
-        items_data = validated_data.pop('orderitem', None)
-        OrderItem.objects.update_or_create(order=instance, defaults=items_data)
-        instance = self.Meta.model(**validated_data)
+        items_data = validated_data.pop('order', None)
+        for id in items_data:
+            OrderItem.objects.update_or_create(**id)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
         instance.save()
         return instance

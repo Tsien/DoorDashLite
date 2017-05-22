@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 from rest_framework import permissions
 from permission import IsOwner
 from django.http import Http404
-
+import sys
 
 # Create your views here.
 
@@ -43,6 +43,22 @@ class UserViewSet(viewsets.ModelViewSet):
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = FoodItem.objects.all()
     serializer_class = FoodItemSerializer
+
+class ItemList(APIView):
+    '''
+    List all items
+    '''
+    def get(self, request, format=None):
+        minx = request.GET.get('min', None)
+        maxx = request.GET.get('max', None)
+        print min, ", ", max
+        if minx is None or maxx is None:
+            items = FoodItem.objects.all()
+        else:
+            items = FoodItem.objects.filter(price__lt=maxx).filter(price__gt=minx)
+        serializer = FoodItemSerializer(items, many=True)
+        return Response(serializer.data)
+
 
 
 class OrderViewSet(viewsets.ModelViewSet):
