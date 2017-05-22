@@ -53,18 +53,18 @@ oi_detail = OrderItemViewSet.as_view({
 urlpatterns = [
     url(r'^$', api_root),
 
-    url(r'^users/$', user_list, name="user-list"),
-    url(r'^users/(?P<pk>[0-9]+)/$', user_detail, name='user-detail'),
+    url(r'^users/$', user_list, name="user_list"),
+    url(r'^users/(?P<pk>[0-9]+)/$', user_detail, name='user_detail'),
 
-    url(r'^items/$', views.ItemList.as_view(), name='item-list'),
-    url(r'^items/(?P<pk>[0-9]+)$', item_detail, name='item-detail'),
+    url(r'^items/$', views.ItemList.as_view(), name='item_list'),
+    url(r'^items/(?P<pk>[0-9]+)$', item_detail, name='item_detail'),
 
-    url(r'^orderitems/$', oi_list, name='oi-list'),
-    url(r'^orderitems/(?P<pk>[0-9]+)$', oi_detail, name='oi-detail'),
+    url(r'^orderitems/$', oi_list, name='oi_list'),
+    url(r'^orderitems/(?P<pk>[0-9]+)$', oi_detail, name='oi_detail'),
 
-    url(r'^orders/$', order_list, name="order-list"),
-    url(r'^orders/(?P<pk>[0-9]+)/$', views.OrderDetail.as_view(), name='order-detail'),
-    url(r'^orders/(?P<pk>[0-9]+)/items$', views.AddItemView.as_view(), name='add-item'),
+    url(r'^orders/$', order_list, name="order_list"),
+    url(r'^orders/(?P<pk>[0-9]+)/$', views.OrderDetail.as_view(), name='order_detail'),
+    url(r'^orders/(?P<pk>[0-9]+)/items$', views.AddItemView.as_view(), name='add_item'),
 
     url(r'^register/$', RegistrationView.as_view(), name="register"),
 ]

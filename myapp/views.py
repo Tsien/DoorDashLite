@@ -16,15 +16,16 @@ from permission import IsOwner
 from django.http import Http404
 import sys
 
+
 # Create your views here.
 
 
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'users': reverse('user-list', request=request, format=format),
-        'food': reverse('item-list', request=request, format=format),
-        'order': reverse('order-list', request=request, format=format),
+        'users': reverse('user_list', request=request, format=format),
+        'food': reverse('item_list', request=request, format=format),
+        'order': reverse('order_list', request=request, format=format),
         'register': reverse('register', request=request, format=format),
     })
 
@@ -44,10 +45,12 @@ class ItemViewSet(viewsets.ModelViewSet):
     queryset = FoodItem.objects.all()
     serializer_class = FoodItemSerializer
 
+
 class ItemList(APIView):
     '''
     List all items
     '''
+
     def get(self, request, format=None):
         minx = request.GET.get('min', None)
         maxx = request.GET.get('max', None)
@@ -58,7 +61,6 @@ class ItemList(APIView):
             items = FoodItem.objects.filter(price__lt=maxx).filter(price__gt=minx)
         serializer = FoodItemSerializer(items, many=True)
         return Response(serializer.data)
-
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -97,7 +99,7 @@ class OrderDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         order = self.get_object(pk)
@@ -122,4 +124,3 @@ class AddItemView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
